@@ -26,10 +26,14 @@ class FITSZoom(object):
         self.data = self.fits[extension].data
         self.wcs = WCS(self.header)
         ### TO DO ##
-
+        sky1 = self.wcs.pixel_to_world(0,0)
+        sky2 = self.wcs.pixel_to_world(-1,-1)
+        print("---------- Recommendations ------------")
+        print(f"ra between {sky1.ra.value:.6f} and {sky2.ra.value:.6f}.")
+        print(f"dec between {sky1.dec.value:.6f} and {sky2.dec.value:.6f}.")
         return 
     
-    def zoom(self, coordinates, cutout_dimensions):
+    def zoom(self, coordinates, cutout_dimensions, save=False):
         """
         Zoom into the given coordinates and create a cutout with the given dimensions
 
@@ -43,10 +47,11 @@ class FITSZoom(object):
 
         cutout = Cutout2D(self.data, coordinates, cutout_dimensions, wcs=self.wcs)
         
-        ax = self.plot(data=cutout.data)
-        return ax
+        ax = self.plot(data=cutout.data, save=save)
+
+        return ax, cutout
     
-    def plot(self, data=None, **kwargs):
+    def plot(self, data=None, save=False, **kwargs):
         """
         Use matplotlib imshow to display the cutout
 
@@ -63,9 +68,26 @@ class FITSZoom(object):
         if not kwargs.get('vmax', False):
             kwargs['vmax'] = np.percentile(self.data, 99)
     
-        _, ax = plt.subplots(1,1, subplot_kw=dict(projection=self.wcs))
+        fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=self.wcs))
 
         ax.imshow(data, **kwargs, origin='lower')
         ax.grid(color='white', ls='solid')
 
+        if save == True:
+            fig.savefig("zoomed.png")
+
         return plt.gca()
+
+    def save(self, cutout, output_filename):
+        """
+        Save a cutout to a new FITS file, without changing the cutout's WCS in the header.
+        """
+
+        new_header = cutout.wcs.to_header()
+
+        # Wrap the cropped pixel data and the new header into a primary HDU
+        hdu = fits.PrimaryHDU(data=cutout.data, header=new_header)
+        # Write it out to disk, overwriting any existing file at that path
+        hdu.writeto(output_filename, overwrite=True)
+
+        return output_filename
