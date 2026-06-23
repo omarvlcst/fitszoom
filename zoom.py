@@ -63,7 +63,9 @@ class FITSZoom(object):
         if not kwargs.get('vmax', False):
             kwargs['vmax'] = np.percentile(self.data, 99)
     
+        _, ax = plt.subplots(1,1, subplot_kw=dict(projection=self.wcs))
 
-        plt.imshow(data, **kwargs)
+        ax.imshow(data, **kwargs, origin='lower')
+        ax.grid(color='white', ls='solid')
 
         return plt.gca()
