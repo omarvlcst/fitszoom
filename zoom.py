@@ -13,12 +13,15 @@ class FITSZoom(object):
         self.fits = fits.open(filename) # open the fits file --> this returns as a list of Header and Data units
         self.setup() # pull out the data we need so that they are ready to use right after construction
     
-    def setup(self):
+    def setup(self, extension=0):
         """
         Extract the necessary attributes from the fits header
+
+        Args:
+            extension: the index where the desired data is within the fits
         """
-        self.header = self.fits[0].header
-        self.data = self.fits[0].data
+        self.header = self.fits[extension].header
+        self.data = self.fits[extension].data
         ### TO DO ###
         return 
     
