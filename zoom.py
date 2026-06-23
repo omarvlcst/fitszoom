@@ -2,6 +2,9 @@ from astropy.io import fits  # importing i/o subpackage for reading FITS files
 
 import astropy.units as u # astropy units
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 class FITSZoom(object):
 
     def __init__(self, filename):
@@ -30,3 +33,23 @@ class FITSZoom(object):
 
         ### TO DO ###
         return 
+    
+    def plot(self, **kwargs):
+        """
+        Use matplotlib imshow to display the cutout
+
+        Returns:
+            axes: the plt axes with the image
+        """
+
+        # set some defaults
+        if not kwargs.get('vmin', False):
+            kwargs['vmin'] = np.percentile(self.data, 1)
+
+        if not kwargs.get('vmax', False):
+            kwargs['vmax'] = np.percentile(self.data, 99)
+    
+
+        plt.imshow(self.data, **kwargs)
+
+        return plt.gca()
