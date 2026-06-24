@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class FITSZoom(object):
+    """
+    Zoom into the given coordinates and create a cutout with the given dimensions
+    """
 
     def __init__(self, filename):
         
@@ -17,10 +20,11 @@ class FITSZoom(object):
     def setup(self, extension=0):
         """
         Extract the necessary attributes from the fits header
+        Print out the recommended image bounds and sky coordinates
 
         Args:
-            extension: the index where the desired data is within the fits
-            alternative_names: dictionary mapping the names of appropriate values
+            extension (int): the index where the desired data is within the fits
+            alternative_names (dict): dictionary mapping the names of appropriate values
         """
         self.header = self.fits[extension].header
         self.data = self.fits[extension].data
