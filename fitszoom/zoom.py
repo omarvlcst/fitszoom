@@ -42,7 +42,7 @@ class FITSZoom(object):
         print(f"dec between {sky1.dec.value:.6f} and {sky2.dec.value:.6f}.")
         return 
     
-    def zoom(self, coordinates, cutout_dimensions, save=False):
+    def zoom(self, coordinates, cutout_dimensions, save=False, **kwargs):
         """
         Zoom into the given coordinates and create a cutout with the given dimensions
 
@@ -60,12 +60,12 @@ class FITSZoom(object):
         
         cutout = Cutout2D(self.data, coordinates, cutout_dimensions, wcs=self.wcs)
         
-        ax = self.plot(data=cutout.data, save=save)
+        ax = self.plot(data=cutout.data, save=save, cutout_wcs = cutout.wcs, **kwargs)
 
         return ax, cutout
     
     
-    def plot(self, data=None, save=False, **kwargs):
+    def plot(self, cutout_wcs, data=None, save=False, **kwargs):
         """
         Use matplotlib imshow to display the cutout
         
@@ -86,7 +86,7 @@ class FITSZoom(object):
         if not kwargs.get('vmax', False):
             kwargs['vmax'] = np.percentile(self.data, 99)
     
-        fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=self.wcs))
+        fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=cutout_wcs))
 
         ax.imshow(data, **kwargs, origin='lower')
         ax.grid(color='white', ls='solid')
