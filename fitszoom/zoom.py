@@ -60,7 +60,7 @@ class FITSZoom(object):
         
         cutout = Cutout2D(self.data, coordinates, cutout_dimensions, wcs=self.wcs)
         
-        ax = self.plot(data=cutout.data,wcs=cutout.wcs, save=save)
+        ax = self.plot(data=cutout.data, save=save)
 
         return ax, cutout
     
@@ -75,6 +75,7 @@ class FITSZoom(object):
         Returns:
             axes: the plt axes with the image
         """
+
         if data is None:
             data = self.data
 
