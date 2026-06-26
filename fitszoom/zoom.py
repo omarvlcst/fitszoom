@@ -65,7 +65,7 @@ class FITSZoom(object):
         return ax, cutout
     
     
-    def plot(self, cutout_wcs, data=None, save=False, **kwargs):
+    def plot(self, cutout_wcs=self.wcs, data=None, save=False, **kwargs):
         """
         Use matplotlib imshow to display the cutout
         
